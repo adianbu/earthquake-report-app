@@ -51,8 +51,8 @@ public class Earthquake {
         mTimeInMilliseconds = timeInMilliseconds;
     }
 
-    public String getMagnitude() {
-        return mag;
+    public double getMagnitude() {
+        return mMagnitude;
     }
 
     public void setMag(String mag) {
