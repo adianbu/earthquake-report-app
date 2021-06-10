@@ -102,16 +102,6 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         timeView.setText(formattedTime);
 
 
-        // opeing the details link on clicking a certain item
-        listItemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent earthquakeIntent = new Intent(Intent.ACTION_VIEW);
-                earthquakeIntent.setData(Uri.parse(earthquake.getUrl()));
-                getContext().startActivity(earthquakeIntent);
-            }
-        });
-
         return listItemView;
 
 

@@ -8,7 +8,9 @@ public class Earthquake {
     String location;
     String date;
     String time;
-    String url;
+
+    /** Website URL of the earthquake */
+    private String mUrl;
     /** Time of the earthquake */
     private long mTimeInMilliseconds;
 
@@ -22,11 +24,11 @@ public class Earthquake {
 
 
     public String getUrl() {
-        return url;
+        return mUrl;
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.mUrl = url;
     }
 
     Earthquake(String mag, String loc, String date, String time, String url){
@@ -34,7 +36,7 @@ public class Earthquake {
         this.location = loc;
         this.date = date;
         this.time =time;
-        this.url = url;
+        this.mUrl = url;
     }
 
     /**
@@ -45,10 +47,11 @@ public class Earthquake {
      * @param timeInMilliseconds is the time in milliseconds (from the Epoch) when the
      *  earthquake happened
      */
-    public Earthquake(double magnitude, String location, long timeInMilliseconds) {
+    public Earthquake(double magnitude, String location, long timeInMilliseconds, String url) {
         this.mMagnitude = magnitude;
         this.location = location;
         mTimeInMilliseconds = timeInMilliseconds;
+        this.mUrl = url;
     }
 
     public double getMagnitude() {
