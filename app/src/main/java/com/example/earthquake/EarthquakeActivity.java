@@ -1,6 +1,9 @@
 package com.example.earthquake;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
@@ -31,8 +34,8 @@ public class EarthquakeActivity extends AppCompatActivity  implements LoaderMana
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query";
 
     /** URL for earthquake data from the USGS dataset */
-//    private static final String USGS_REQUEST_URL =
-//            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
+    private static final String USGS_REQUEST_URL_full =
+            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
 
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
@@ -42,8 +45,10 @@ public class EarthquakeActivity extends AppCompatActivity  implements LoaderMana
 
     /** Adapter for the list of earthquakes */
     private EarthquakeAdapter mAdapter;
+    private EarthquakeRecyclerAdapter rAdapter;
 
     private TextView mEmptyStateTextView;
+    private List<Earthquake> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +66,15 @@ public class EarthquakeActivity extends AppCompatActivity  implements LoaderMana
 
 //        ArrayList<Earthquake> earthquakes = new ArrayList<>(QueryUtils.extractEarthquakes());
 
+//        //Recycler view
+//        RecyclerView earthquakeRecyclerListView = (RecyclerView) findViewById(R.id.list);
+//        earthquakeRecyclerListView.setLayoutManager(new LinearLayoutManager(this));
+//
+//        earthquakeRecyclerListView.setAdapter(rAdapter);
+
+
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
-
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         earthquakeListView.setEmptyView(mEmptyStateTextView);
 
@@ -77,7 +88,7 @@ public class EarthquakeActivity extends AppCompatActivity  implements LoaderMana
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(mAdapter);
-
+//
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -184,13 +195,17 @@ public class EarthquakeActivity extends AppCompatActivity  implements LoaderMana
         String minMagnitude = sharedPrefs.getString(
                 getString(R.string.settings_min_magnitude_key),
                 getString(R.string.settings_min_magnitude_default));
+        String orderBy = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        );
         Uri baseUri = Uri.parse(USGS_REQUEST_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
         uriBuilder.appendQueryParameter("format", "geojson");
         uriBuilder.appendQueryParameter("limit", "10");
         uriBuilder.appendQueryParameter("minmag", minMagnitude);
-        uriBuilder.appendQueryParameter("orderby", "time");
+        uriBuilder.appendQueryParameter("orderby", orderBy);
 
         return new EarthquakeLoader(this, uriBuilder.toString());
 
@@ -201,13 +216,20 @@ public class EarthquakeActivity extends AppCompatActivity  implements LoaderMana
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
         // Clear the adapter of previous earthquake data
-        mAdapter.clear();
-         findViewById(R.id.progressBar).setVisibility(View.GONE);
+//        mAdapter.clear();
+
+        // Hide loading indicator because the data has been loaded
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
+
         // Set empty state text to display "No earthquakes found."
         mEmptyStateTextView.setText(R.string.no_earthquakes);
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
+//        ArrayList<Earthquake> e= new ArrayList<Earthquake>();
         if (earthquakes != null && !earthquakes.isEmpty()) {
+
+//           list =earthquakes;
+//            rAdapter = new EarthquakeRecyclerAdapter( this,list);
             mAdapter.addAll(earthquakes);
         }
     }
