@@ -1,7 +1,9 @@
 package com.example.earthquake;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,16 +30,15 @@ public class EarthquakeRecyclerAdapter extends RecyclerView.Adapter<EarthquakeRe
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
-        View v  = LayoutInflater.from(context).inflate(R.layout.earthquake_list,parent,false);
+        View v  = LayoutInflater.from(context).inflate(R.layout.earthquake_recycler_list,parent,false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull  EarthquakeRecyclerAdapter.ViewHolder holder, int position) {
-        final Earthquake earthquake = earthquakes.get(position);
+         Earthquake earthquake = earthquakes.get(position);
         String location = earthquake.getLocation();
-        String formattedMagnitude = formatMagnitude(earthquake.getMagnitude());
-        Date dateObject = new Date(earthquake.getTimeInMilliseconds());
+
 
         //for location and place
         int index = location.indexOf(" of ");
@@ -54,6 +55,8 @@ public class EarthquakeRecyclerAdapter extends RecyclerView.Adapter<EarthquakeRe
         holder.loc.setText(_loc);
         holder.place.setText(_place);
 
+        String formattedMagnitude = formatMagnitude(earthquake.getMagnitude());
+        Date dateObject = new Date(earthquake.getTimeInMilliseconds());
         //for magnitude
         // Display the magnitude of the current earthquake in that TextView
         holder.magnitudeView.setText(formattedMagnitude);
@@ -75,6 +78,21 @@ public class EarthquakeRecyclerAdapter extends RecyclerView.Adapter<EarthquakeRe
         String formattedTime = formatTime(dateObject);
         // Display the time of the current earthquake in that TextView
         holder.timeView.setText(formattedTime);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener(){
+               @Override
+               public void onClick(View view) {
+                   // Convert the String URL into a URI object (to pass into the Intent constructor)
+                   Uri earthquakeUri = Uri.parse(earthquake.getUrl());
+
+                   // Create a new intent to view the earthquake URI
+                   Intent websiteIntent = new Intent(Intent.ACTION_VIEW, earthquakeUri);
+
+                   // Send the intent to launch a new activity
+                   context.startActivity(websiteIntent);
+               }
+           }
+        );
     }
 
     @Override
@@ -88,13 +106,15 @@ public class EarthquakeRecyclerAdapter extends RecyclerView.Adapter<EarthquakeRe
         TextView place;
         TextView loc;
         TextView magnitudeView;
+        View parentView;
         public ViewHolder(@NonNull  View itemView) {
             super(itemView);
-            TextView magnitudeView = (TextView) itemView.findViewById(R.id.magnitude);
-            TextView loc = (TextView) itemView.findViewById(R.id.location);
-            TextView place = (TextView) itemView.findViewById(R.id.place);
-            TextView dateView = (TextView) itemView.findViewById(R.id.date);
-            TextView timeView = (TextView) itemView.findViewById(R.id.time);
+             parentView=itemView;
+             magnitudeView = (TextView) itemView.findViewById(R.id.magnitude);
+             loc = (TextView) itemView.findViewById(R.id.location);
+             place = (TextView) itemView.findViewById(R.id.place);
+             dateView = (TextView) itemView.findViewById(R.id.date);
+             timeView = (TextView) itemView.findViewById(R.id.time);
         }
     }
 
